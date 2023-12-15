@@ -10,3 +10,7 @@ to convert audio files to an AM format or out of it.
 [SciPy](https://scipy.org/)
 
 [matplotlib](https://matplotlib.org/)
+
+## Helpful References:
+
+[Python 3.12.1 Documentation](https://docs.python.org/release/3.12.1/)
