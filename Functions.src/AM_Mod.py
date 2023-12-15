@@ -43,28 +43,18 @@ def AMmod(t, x, fc, BW, rolloff):
         return
     
     #Start Main Function:
-    
+    ##########################################################################################
+    #Use a low pass filter on the input signal:
+    xLPF = filter(t,x,BW,rolloff) 
 
+    #Find the absolute minimum point and shift the signal up to remove negative values 
+    A = np.abs(min(xLPF))
+    y = xLPF + A;
 
+    #Multiply by cos to achieve a carry frequency of fc that contains all the signal information
+    y = y * np.cos(2*np.pi*fc*t)
 
     #End of function: return the new RF (modulated) signal and the original filtered signal
     return (y,xLPF)
 
-
-'''
-y = []
-
-t = np.arange(0,10,0.1) # range from 0 to 100 in steps of 1
-
-x = np.sin(np.pi * t)
-
-
-plt.style.use('_mpl-gallery')
-
-fig, tx = plt.subplots()
-
-plt.stem(t,x)
-plt.title("Poopy")
-plt.show()
-
-'''
+#############################################################################################
