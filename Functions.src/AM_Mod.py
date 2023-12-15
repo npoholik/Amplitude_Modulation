@@ -17,7 +17,7 @@
 #   y = (output) Modulated signal output
 #   xLPF = (output) Low passed audio signal 
 #
-#   function [y, xLPF] = AMmod(t,x,fc,BW,rolloff)
+#   function [y, xLPF] = AMmod(t,x,fc,BW,rolloff) <- Original Form in Matlab
 #--------------------------------------------------
 import numpy as np
 import scipy as sp
