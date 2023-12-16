@@ -3,6 +3,10 @@ import scipy as sp
 import os
 
 def loadFile(filename):
+
+    time = [];
+    data = [];
+
     #Obtain the current file path for the project
     cwd = os.getcwd()
     projectPath = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -16,10 +20,10 @@ def loadFile(filename):
         duration = len(data)/sampling
         time = np.arange(0,duration, 1/sampling)
 
+        return time, data
+    
     except OSError:
         print('Could not open/read file: ', filename)
-        return
-
-    return time, data
+        return time, data
 
 

@@ -8,9 +8,10 @@ from Functions import LoadAudio
 
 time, data = LoadAudio.loadFile('Sicko Mode.wav')
 
-plt.style.use('_mpl-gallery')
-plt.plot(time,data)
-plt.show()
+if (len(time) != 0):
+    plt.style.use('_mpl-gallery')
+    plt.plot(time,data)
+    plt.show()
 
 
 
