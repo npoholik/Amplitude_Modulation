@@ -2,15 +2,15 @@ import numpy as np
 import scipy as sp
 import os
 
-def loadFile(filename):
+def loadFile(filePath):
 
     time = [];
     data = [];
 
     #Obtain the current file path for the project
-    cwd = os.getcwd()
-    projectPath = os.path.abspath(os.path.join(cwd, os.pardir))
-    filePath = projectPath + '\\Amplitude_Modulation\\Audio_Files\\' + filename 
+    #cwd = os.getcwd()
+    #projectPath = os.path.abspath(os.path.join(cwd, os.pardir))
+    #filePath = projectPath + '\\Amplitude_Modulation\\Audio_Files\\' + filename 
 
     #Check if valid filename
     try:
@@ -23,7 +23,7 @@ def loadFile(filename):
         return time, data
     
     except OSError:
-        print('Could not open/read file: ', filename)
+        print('Could not open/read file of path: ', filePath)
         return time, data
 
 
