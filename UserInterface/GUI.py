@@ -1,11 +1,14 @@
 import tkinter as tk
 import tkinter.font as tkFont
+from ctypes import windll
 from PIL import ImageTk
 import time
 import os
 
 class GUI:
     def __init__(self, root):
+        #Avoid blurry font:
+        windll.shcore.SetProcessDpiAwareness(1)
         #setting title
         root.title("Amplitude Modulation")
         #setting window size
@@ -44,6 +47,8 @@ class GUI:
         ft = tkFont.Font(family='Times',size=10)
         fileExplore["font"] = ft
         fileExplore["fg"] = "#000000"
+        fileExplore["border"] = 0
+        fileExplore["highlightthickness"] = 0
         fileExplore["justify"] = "center"
         fileExplore["text"] = "Open File"
         fileExplore.place(x=350,y=190,width=82,height=30)
@@ -55,6 +60,8 @@ class GUI:
         ft = tkFont.Font(family='Times',size=10)
         loadFile["font"] = ft
         loadFile["fg"] = "#000000"
+        loadFile["border"] = 0
+        loadFile["highlightthickness"] = 0
         loadFile["justify"] = "center"
         loadFile["text"] = "Load File"
         loadFile.place(x=440,y=190,width=77,height=30)
@@ -62,13 +69,13 @@ class GUI:
 
         #FILE INFO TEXT
         fileInfo=tk.Label(root)
-        ft = tkFont.Font(family='Times',size=8)
+        ft = tkFont.Font(family='Times',size=9)
         fileInfo["font"] = ft
         fileInfo["fg"] = "#FFFFFF"
         fileInfo["justify"] = "center"
-        fileInfo["text"] = "**Supported File Types: .wav (for audio) and .csv for generate RF signals**"
+        fileInfo["text"] = "**Supported File Types: .wav (for audio) and .csv (for generated RF signals)**"
         fileInfo["background"]= '#28282B'
-        fileInfo.place(x=80,y=160,width=353,height=30)
+        fileInfo.place(x=80,y=160,width=390,height=30)
 
         #BUTTON TO MOD/DEMOD
         demodMod=tk.Button(root)
@@ -76,6 +83,8 @@ class GUI:
         ft = tkFont.Font(family='Times',size=10)
         demodMod["font"] = ft
         demodMod["fg"] = "#000000"
+        demodMod["border"] = 0
+        demodMod["highlightthickness"] = 0
         demodMod["justify"] = "center"
         demodMod["text"] = "Mod/Demod Audio Sinal"
         demodMod.place(x=140,y=320,width=134,height=30)
@@ -93,21 +102,35 @@ class GUI:
 
 
         #ANIMATED GIF
-        frameCount = 10;
-        frames = [ImageTk.PhotoImage(file='UserInterface/Sin.gif',format = 'gif -index %i' %(i)) for i in range(frameCount)]
+        frames = []
+        frame_ind = 0
+        last_frame = 0
 
-        def update(ind):
-            frame = frames[ind]
-            ind += 1
-            if ind >= frameCount:
-                ind = 0
+        while True:
+            try:
+                # Read a frame from GIF file
+                part = 'gif -index {}'.format(frame_ind)
+                frame = tk.PhotoImage(file='UserInterface/Sin.gif', format=part)
+            except:
+                last_frame = frame_ind - 1    # Save index for last frame
+                break               # Will break when GIF index is reached
+            frames.append(frame)
+            frame_ind += 1        # Next frame index
+
+        def update(frame_num):
+            frame = frames[frame_num]
+            frame_num += 1
+            if frame_num > last_frame:
+                frame_num = 0
             animatedLabel.configure(image=frame)
-            root.after(10, update, ind)
+            root.after(35, update, frame_num)
 
         animatedLabel=tk.Label(root)
+        animatedLabel["borderwidth"] = 0
+        animatedLabel["highlightthickness"] = 0
+        animatedLabel["background"]= '#28282B'
         animatedLabel.place(x=120,y=60,width=363,height=103)
-        root.after(0, update, 0)
-
+        update(0) #Start animation
 
         # LABEL TO SHOWCASE SELECTED FILE AND ITS TYPE
         selectedFile=tk.Label(root)
@@ -120,25 +143,31 @@ class GUI:
         selectedFile.place(x=80,y=240,width=413,height=38)
 
 
-        GButton_173=tk.Button(root)
-        GButton_173["bg"] = "#e9e9ed"
+        #PLOT SIGNAL BUTTON
+        plotSignal=tk.Button(root)
+        plotSignal["bg"] = "#e9e9ed"
         ft = tkFont.Font(family='Times',size=10)
-        GButton_173["font"] = ft
-        GButton_173["fg"] = "#000000"
-        GButton_173["justify"] = "center"
-        GButton_173["text"] = "Plot Signal"
-        GButton_173.place(x=300,y=320,width=134,height=30)
-        GButton_173["command"] = self.GButton_173_command
+        plotSignal["font"] = ft
+        plotSignal["fg"] = "#000000"
+        plotSignal["border"] = 0
+        plotSignal["highlightthickness"] = 0
+        plotSignal["justify"] = "center"
+        plotSignal["text"] = "Plot Signal"
+        plotSignal.place(x=300,y=320,width=134,height=30)
+        plotSignal["command"] = self.GButton_173_command
 
-        GButton_469=tk.Button(root)
-        GButton_469["bg"] = "#e9e9ed"
+        #PLAY AUDIO FILE
+        playAudio=tk.Button(root)
+        playAudio["bg"] = "#e9e9ed"
         ft = tkFont.Font(family='Times',size=10)
-        GButton_469["font"] = ft
-        GButton_469["fg"] = "#000000"
-        GButton_469["justify"] = "center"
-        GButton_469["text"] = "Play Music"
-        GButton_469.place(x=220,y=360,width=133,height=30)
-        GButton_469["command"] = self.GButton_469_command
+        playAudio["font"] = ft
+        playAudio["fg"] = "#000000"
+        playAudio["justify"] = "center"
+        playAudio["border"] = 0
+        playAudio["highlightthickness"] = 0
+        playAudio["text"] = "Play Audio"
+        playAudio.place(x=220,y=360,width=133,height=30)
+        playAudio["command"] = self.GButton_469_command
 
         #SHOWCASE CURRENT VERSION NUMBER
         currentVers=tk.Message(root)
@@ -146,10 +175,26 @@ class GUI:
         currentVers["font"] = ft
         currentVers["fg"] = "#FFFFFF"
         currentVers["justify"] = "center"
-        currentVers["text"] = "Version: Beta 12.18.1"
+        currentVers["text"] = "Version: Beta 12.18.23.2"
         currentVers["background"]= '#28282B'
         currentVers.place(x=20,y=460,width=80,height=25)
 
+
+        #QUIT BUTTON
+        quitButton = tk.Button(root)
+        quitButton["bg"] = "#e9e9ed"
+        ft = tkFont.Font(family='Times New Roman bold', size = 10)
+        quitButton["font"] = ft
+        quitButton["fg"] = "#000000"
+        quitButton["bg"] = "#f03232"
+        quitButton["border"] = 0
+        quitButton["highlightthickness"] = 0
+        quitButton["justify"] = "center"
+        quitButton["text"] = "Quit"
+        quitButton.place(x=100,y=460, width=134, height=30)
+        quitButton["command"] = root.destroy
+
+    
     def GButton_115_command(self):
         print("command")
 
