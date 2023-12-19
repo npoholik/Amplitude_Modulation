@@ -1,8 +1,8 @@
 import tkinter as tk
 import tkinter.font as tkFont
+from tkinter import filedialog
 from ctypes import windll
-from PIL import ImageTk
-import time
+from Functions import LoadAudio
 import os
 
 class GUI:
@@ -32,14 +32,14 @@ class GUI:
         titleLabel.place(x=70,y=10,width=464,height=73)
 
         #USER ENTRY FILE PATH
-        fileEntry=tk.Entry(root)
-        fileEntry["borderwidth"] = "1px"
+        self.fileEntry=tk.Entry(root)
+        self.fileEntry["borderwidth"] = "1px"
         ft = tkFont.Font(family='Times New Roman italics',size=10)
-        fileEntry["font"] = ft
-        fileEntry["fg"] = "#333333"
-        fileEntry["justify"] = "center"
-        fileEntry["text"] = "File Path"
-        fileEntry.place(x=80,y=190,width=263,height=30)
+        self.fileEntry["font"] = ft
+        self.fileEntry["fg"] = "#333333"
+        self.fileEntry["justify"] = "center"
+        self.fileEntry["text"] = "File Path"
+        self.fileEntry.place(x=80,y=190,width=263,height=30)
 
         #BUTTON TO OPEN FILE EXPLORER
         fileExplore =tk.Button(root)
@@ -50,9 +50,9 @@ class GUI:
         fileExplore["border"] = 0
         fileExplore["highlightthickness"] = 0
         fileExplore["justify"] = "center"
-        fileExplore["text"] = "Open File"
+        fileExplore["text"] = "Select File"
         fileExplore.place(x=350,y=190,width=82,height=30)
-        fileExplore["command"] = self.GButton_115_command
+        fileExplore["command"] = self.fileExplore
 
         #BUTTON TO LOAD SELECTED FILE
         loadFile=tk.Button(root)
@@ -63,9 +63,9 @@ class GUI:
         loadFile["border"] = 0
         loadFile["highlightthickness"] = 0
         loadFile["justify"] = "center"
-        loadFile["text"] = "Load File"
+        loadFile["text"] = "Open File"
         loadFile.place(x=440,y=190,width=77,height=30)
-        loadFile["command"] = self.GButton_563_command
+        loadFile["command"] = self.openFile
 
         #FILE INFO TEXT
         fileInfo=tk.Label(root)
@@ -87,6 +87,7 @@ class GUI:
         demodMod["highlightthickness"] = 0
         demodMod["justify"] = "center"
         demodMod["text"] = "Mod/Demod Audio Sinal"
+        demodMod["state"] = "disabled"
         demodMod.place(x=140,y=320,width=134,height=30)
         demodMod["command"] = self.GButton_476_command
 
@@ -133,14 +134,14 @@ class GUI:
         update(0) #Start animation
 
         # LABEL TO SHOWCASE SELECTED FILE AND ITS TYPE
-        selectedFile=tk.Label(root)
+        self.selectedFile=tk.Label(root)
         ft = tkFont.Font(family='Times',size=10)
-        selectedFile["font"] = ft
-        selectedFile["fg"] = "#FFFFFF"
-        selectedFile["justify"] = "left"
-        selectedFile["text"] = "Current Signal Selected: ____________________ (*AUDIO*)/(*RF*)"
-        selectedFile["background"]= '#28282B'
-        selectedFile.place(x=80,y=240,width=413,height=38)
+        self.selectedFile["font"] = ft
+        self.selectedFile["fg"] = "#FFFFFF"
+        self.selectedFile["justify"] = "left"
+        self.selectedFile["text"] = "Current Signal Selected: ____________________ (*AUDIO*)/(*RF*)"
+        self.selectedFile["background"]= '#28282B'
+        self.selectedFile.place(x=80,y=240,width=413,height=38)
 
 
         #PLOT SIGNAL BUTTON
@@ -153,6 +154,7 @@ class GUI:
         plotSignal["highlightthickness"] = 0
         plotSignal["justify"] = "center"
         plotSignal["text"] = "Plot Signal"
+        plotSignal["state"] = "disabled"
         plotSignal.place(x=300,y=320,width=134,height=30)
         plotSignal["command"] = self.GButton_173_command
 
@@ -166,6 +168,7 @@ class GUI:
         playAudio["border"] = 0
         playAudio["highlightthickness"] = 0
         playAudio["text"] = "Play Audio"
+        playAudio["state"] = "disabled"
         playAudio.place(x=220,y=360,width=133,height=30)
         playAudio["command"] = self.GButton_469_command
 
@@ -175,7 +178,7 @@ class GUI:
         currentVers["font"] = ft
         currentVers["fg"] = "#FFFFFF"
         currentVers["justify"] = "center"
-        currentVers["text"] = "Version: Beta 12.18.23.2"
+        currentVers["text"] = "Version: Beta 12.18.23.3"
         currentVers["background"]= '#28282B'
         currentVers.place(x=20,y=460,width=80,height=25)
 
@@ -195,12 +198,29 @@ class GUI:
         quitButton["command"] = root.destroy
 
     
-    def GButton_115_command(self):
-        print("command")
+    def fileExplore(self):
+        cwd = os.getcwd()
+        projectPath = os.path.abspath(os.path.join(cwd, os.pardir))
+        initialDir = projectPath + '\\Amplitude_Modulation\\UserGenerated\\' 
+        filePath = filedialog.askopenfilename(initialdir=initialDir, title = "Select a File",filetypes = (("Audio files","*.wav*"),("RF files","*.csv*")))
+        self.fileEntry.delete(0, "end")
+        self.fileEntry.insert(0,filePath)
 
 
-    def GButton_563_command(self):
-        print("command")
+    def openFile(self):
+        filePath = self.fileEntry.get()
+        try:
+            time, samples = LoadAudio.loadFile(filePath)
+        except:
+            self.setSelectedFile('***CRITICAL ERROR: Unsupported File Type***')
+            return
+
+        if (len(time) == 0):
+            self.setSelectedFile('ERROR: Missing File Path or Unsupported File Type (Source: UNKNOWN)')
+        else:
+            fileName = os.Path(filePath).stem
+            self.setSelectedFile('Successfully Opened File: ' + fileName + '(Source: .wav Audio)')
+
 
 
     def GButton_476_command(self):
@@ -214,9 +234,7 @@ class GUI:
     def GButton_469_command(self):
         print("command")
 
-'''
-if __name__ == "__main__":
-    root = tk.Tk()
-    gui = GUI(root)
-    root.mainloop()
-'''
+    def setSelectedFile(self,message):
+        self.selectedFile.config(text = message)
+
+
