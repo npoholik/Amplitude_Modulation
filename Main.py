@@ -3,18 +3,14 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 from Functions import LoadAudio
+from UserInterface.GUI import GUI
 
+root = tk.Tk()
+ui = GUI(root)
 
+root.mainloop()
 
-def modulateFile():
-    return
-
-def demodulateFile():
-    return
-
-def playFile():
-    return
-
+'''
 # Initialize GUI using tkinter API
 master = tk.Tk()
 master.geometry('1280x720')
@@ -54,3 +50,4 @@ if (len(time) != 0):
     plt.plot(time,data)
     plt.show()
     
+'''

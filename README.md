@@ -11,6 +11,14 @@ to convert audio files to an AM format or out of it.
 
 [matplotlib](https://matplotlib.org/)
 
+[IPython](https://ipython.org/)
+
+[ffmpeg](https://ffmpeg.org/)
+
 ## Helpful References:
 
 [Python 3.12.1 Documentation](https://docs.python.org/release/3.12.1/)
+
+## Other Tools Utilized:
+
+[Visual TK](https://visualtk.com/) Web-based visual tkinter GUI builder
