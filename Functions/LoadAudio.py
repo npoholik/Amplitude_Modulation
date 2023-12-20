@@ -6,6 +6,7 @@ def loadFile(filePath):
 
     time = [];
     data = [];
+    fileType = -1 # -1 for unknown, 0 for .wav, 1 for .npz
 
     #Obtain the current file path for the project
     #cwd = os.getcwd()
@@ -20,10 +21,18 @@ def loadFile(filePath):
         duration = len(data)/sampling
         time = np.arange(0,duration, 1/sampling)
 
-        return time, data
+        fileType = 0
+        return time, data, fileType
     
     except OSError:
-        print('Could not open/read file of path: ', filePath)
-        return time, data
+        try: 
+            content = np.load(filePath)
+            content['time'] = time
+            content['data'] = data
+            fileType = 1
+            return time, data, fileType
+
+        except OSError:
+            return time, data, fileType
 
 

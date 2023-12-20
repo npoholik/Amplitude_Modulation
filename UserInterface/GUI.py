@@ -4,6 +4,7 @@ from tkinter import filedialog
 from ctypes import windll
 from Functions import LoadAudio
 import os
+from os import path
 
 class GUI:
     def __init__(self, root):
@@ -32,13 +33,14 @@ class GUI:
         titleLabel.place(x=70,y=10,width=464,height=73)
 
         #USER ENTRY FILE PATH
-        self.fileEntry=tk.Entry(root)
+        default = tk.StringVar()
+        default.set('File Path')
+        self.fileEntry=tk.Entry(root, textvariable=default)
         self.fileEntry["borderwidth"] = "1px"
         ft = tkFont.Font(family='Times New Roman italics',size=10)
         self.fileEntry["font"] = ft
         self.fileEntry["fg"] = "#333333"
         self.fileEntry["justify"] = "center"
-        self.fileEntry["text"] = "File Path"
         self.fileEntry.place(x=80,y=190,width=263,height=30)
 
         #BUTTON TO OPEN FILE EXPLORER
@@ -73,7 +75,7 @@ class GUI:
         fileInfo["font"] = ft
         fileInfo["fg"] = "#FFFFFF"
         fileInfo["justify"] = "center"
-        fileInfo["text"] = "**Supported File Types: .wav (for audio) and .csv (for generated RF signals)**"
+        fileInfo["text"] = "**Supported File Types: .wav (for audio) and .npz (for generated RF signals)**"
         fileInfo["background"]= '#28282B'
         fileInfo.place(x=80,y=160,width=390,height=30)
 
@@ -86,9 +88,9 @@ class GUI:
         demodMod["border"] = 0
         demodMod["highlightthickness"] = 0
         demodMod["justify"] = "center"
-        demodMod["text"] = "Mod/Demod Audio Sinal"
+        demodMod["text"] = "Mod/Demod Audio Signal"
         demodMod["state"] = "disabled"
-        demodMod.place(x=140,y=320,width=134,height=30)
+        demodMod.place(x=400,y=360,width=134,height=30)
         demodMod["command"] = self.GButton_476_command
 
         # SIGNAL OPTIONS LABEL
@@ -99,7 +101,7 @@ class GUI:
         signalOpt["justify"] = "center"
         signalOpt["text"] = "Signal Options:"
         signalOpt["background"]= '#28282B'
-        signalOpt.place(x=60,y=290,width=144,height=30)
+        signalOpt.place(x=10,y=280,width=144,height=30)
 
 
         #ANIMATED GIF
@@ -153,10 +155,25 @@ class GUI:
         plotSignal["border"] = 0
         plotSignal["highlightthickness"] = 0
         plotSignal["justify"] = "center"
-        plotSignal["text"] = "Plot Signal"
+        plotSignal["text"] = "Plot Time Signal"
         plotSignal["state"] = "disabled"
-        plotSignal.place(x=300,y=320,width=134,height=30)
+        plotSignal.place(x=60,y=310,width=134,height=30)
         plotSignal["command"] = self.GButton_173_command
+
+
+        # PLOT FOURIER TRANSF. 
+        ftPlot = tk.Button(root)
+        ftPlot["bg"] = "#e9e9ed"
+        ft = tkFont.Font(family = 'Times', size = 10)
+        ftPlot["font"]= ft
+        ftPlot["fg"] = "#000000"
+        ftPlot["border"] = 0
+        ftPlot["highlightthickness"] = 0
+        ftPlot["justify"] = "center"
+        ftPlot["state"] = "disabled"
+        ftPlot["text"] = "Plot Fourier Transf."
+        ftPlot.place(x=400,y=310,width=134,height=30)
+        #ftPlot["command"] = self.plotFT
 
         #PLAY AUDIO FILE
         playAudio=tk.Button(root)
@@ -169,7 +186,7 @@ class GUI:
         playAudio["highlightthickness"] = 0
         playAudio["text"] = "Play Audio"
         playAudio["state"] = "disabled"
-        playAudio.place(x=220,y=360,width=133,height=30)
+        playAudio.place(x=230,y=310,width=133,height=30)
         playAudio["command"] = self.GButton_469_command
 
         #SHOWCASE CURRENT VERSION NUMBER
@@ -178,7 +195,7 @@ class GUI:
         currentVers["font"] = ft
         currentVers["fg"] = "#FFFFFF"
         currentVers["justify"] = "center"
-        currentVers["text"] = "Version: Beta 12.18.23.3"
+        currentVers["text"] = "Version: Beta 12.19.23.1"
         currentVers["background"]= '#28282B'
         currentVers.place(x=20,y=460,width=80,height=25)
 
@@ -197,12 +214,46 @@ class GUI:
         quitButton.place(x=100,y=460, width=134, height=30)
         quitButton["command"] = root.destroy
 
+        #CARRIER FREQUENCY INPUT
+        defaultText = tk.StringVar()
+        defaultText.set('Enter Carrier Freq.')
+        carFreq = tk.Entry(root,textvariable=defaultText)
+        carFreq["borderwidth"] = "1px"
+        ft = tkFont.Font(family='Times', size=10)
+        carFreq["font"] = ft
+        carFreq["fg"] = "#333333"
+        carFreq["state"] = "disabled"
+        carFreq["justify"] = "center"
+        carFreq.place(x=60, y=360, width=132, height = 30)
+
+        #ROLLOFF INPUT
+        defaultText = tk.StringVar()
+        defaultText.set('Enter Rolloff')
+        rolloff = tk.Entry(root,textvariable=defaultText)
+        rolloff["borderwidth"] = "1px"
+        ft = tkFont.Font(family='Times',size=10)
+        rolloff["font"] = ft
+        rolloff["fg"] = "#333333"
+        rolloff["state"] = "disabled"
+        rolloff["justify"] = "center"
+        rolloff.place(x=230,y=360,width=133,height=30)
+
+        #Error message output to the user:
+        errorOut = tk.Label(root)
+        ft = tkFont.Font(family='Times New Roman bold', size = 10)
+        errorOut["font"] = ft
+        errorOut["fg"] = "#FFFFFF"
+        errorOut["justify"] = "left"
+        errorOut["bg"] =  '#28282B'
+        errorOut["text"] = ''
+        errorOut.place(x=60, y=410, width=368, height=36)
+
     
     def fileExplore(self):
         cwd = os.getcwd()
         projectPath = os.path.abspath(os.path.join(cwd, os.pardir))
         initialDir = projectPath + '\\Amplitude_Modulation\\UserGenerated\\' 
-        filePath = filedialog.askopenfilename(initialdir=initialDir, title = "Select a File",filetypes = (("Audio files","*.wav*"),("RF files","*.csv*")))
+        filePath = filedialog.askopenfilename(initialdir=initialDir, title = "Select a File",filetypes = (("Audio files","*.wav*"),("RF files","*.npz*")))
         self.fileEntry.delete(0, "end")
         self.fileEntry.insert(0,filePath)
 
@@ -210,16 +261,20 @@ class GUI:
     def openFile(self):
         filePath = self.fileEntry.get()
         try:
-            time, samples = LoadAudio.loadFile(filePath)
-        except:
-            self.setSelectedFile('***CRITICAL ERROR: Unsupported File Type***')
-            return
+            time, samples, fileType = LoadAudio.loadFile(filePath)
 
-        if (len(time) == 0):
-            self.setSelectedFile('ERROR: Missing File Path or Unsupported File Type (Source: UNKNOWN)')
-        else:
-            fileName = os.Path(filePath).stem
-            self.setSelectedFile('Successfully Opened File: ' + fileName + '(Source: .wav Audio)')
+            if (fileType == -1):
+                self.setSelectedFile('ERROR: Missing File Path or Unsupported File Type (Source: UNKNOWN)')
+            elif (fileType == 0):
+                fileName = os.Path(filePath).stem
+                self.setSelectedFile('Successfully Opened File: ' + fileName + '(Source: .wav Audio)')
+            elif (fileType == 1): 
+                fileName = os.Path(filePath).stem
+                self.setSelectedFile('Successfully Opened File: ' + fileName + '(Source: .npz RF)')
+        except:
+            fileName = os.path.basename(filePath).split('.')
+            self.setSelectedFile('***CRITICAL ERROR:*** Unsupported File Type: .' + fileName[len(fileName)-1])
+            return
 
 
 
