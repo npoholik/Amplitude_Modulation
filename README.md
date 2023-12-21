@@ -11,7 +11,7 @@ to convert audio files to an AM format or out of it.
 
 [matplotlib](https://matplotlib.org/)
 
-[pydub](https://pypi.org/project/pydub/)
+[sounddevice](https://pypi.org/project/sounddevice/) 
 
 ## Helpful References:
 
