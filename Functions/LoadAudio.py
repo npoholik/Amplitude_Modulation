@@ -7,6 +7,7 @@ def loadFile(filePath):
 
     time = [];
     data = [];
+    sampling = 0
     fileType = -1 # -1 for unknown, 0 for .wav, 1 for .npz
     msg = ''
 
@@ -41,10 +42,10 @@ def loadFile(filePath):
             fileName = os.path.basename(filePath).split('.')
             msg = 'Successfully Opened File: ' + fileName[len(fileName)-2] + '.' + fileName[len(fileName)-1] + ' (Source: .npz RF)'
             
-            return time, data, fileType, msg
+            return time, data, sampling, fileType, msg
 
         except OSError:
             msg = 'Error: Missing File Path or Unsupported File Type (Source: UNKNOWN)'
-            return time, data, fileType, msg
+            return time, data, sampling, fileType, msg
 
 

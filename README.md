@@ -1,6 +1,9 @@
 # Amplitude_Modulation
-The goal of this project was ultimately to take previously created functions in Matlab, port them into python, and create a user friendly experience
-to convert audio files to an AM format or out of it. 
+>Python program to perform amplitude modulation and demodulation
+
+----------------------------------------------------------------------------------------------------
+
+The goal of this project was ultimately to take previously created functions in Matlab, port them into python, and create a user friendly experience to convert audio files to an AM RF format or out of it. 
 
 ----------------------------------------------------------------------------------------------------
 
@@ -19,4 +22,4 @@ to convert audio files to an AM format or out of it.
 
 ## Other Tools Utilized:
 
-[Visual TK](https://visualtk.com/) Web-based visual tkinter GUI builder
+[Visual TK](https://visualtk.com/) Web-based visual tkinter UI builder

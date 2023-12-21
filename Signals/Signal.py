@@ -16,6 +16,12 @@ class Signal:
         self.__rolloff = rolloff
         self.__fileType = fileType
         self.__samplerate = samplerate
+    
+    def playAudio(self, filePath):
+        if (self.__fileType == 0):
+            sd.play(self.__sample_vect, self.__samplerate)
+
+
 
     def getTimeVector(self):
         return self.__t_vect
@@ -31,7 +37,3 @@ class Signal:
     
     def getFileType(self):
         return self.__fileType
-    
-    def playAudio(self, filePath):
-        if (self.__fileType == 0):
-            sd.play(self.__sample_vect, self.__samplerate)
