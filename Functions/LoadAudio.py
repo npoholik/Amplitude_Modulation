@@ -26,7 +26,7 @@ def loadFile(filePath):
         fileName = os.path.basename(filePath).split('.')
         msg = 'Successfully Opened File: ' + fileName[len(fileName)-2] + '.' + fileName[len(fileName)-1] + ' (Source: .wav Audio)'
         fileType = 0
-        return time, data, fileType, msg
+        return time, data, sampling, fileType, msg
     
     except wavfile.WavFileWarning:
         msg = 'Error: '

@@ -1,8 +1,10 @@
-from Controller import Controller
+import tkinter as tk
+from UserInterface.GUI import GUI
 
-launchProgram = Controller()
+root = tk.Tk()
 
+ui = GUI(root)
 
-
+root.mainloop()
 
 
