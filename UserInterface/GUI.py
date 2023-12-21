@@ -7,6 +7,7 @@ import os
 from os import path
 
 class GUI:
+    version = 'Beta 12.20.23.1'
     def __init__(self, root):
         #Avoid blurry font:
         windll.shcore.SetProcessDpiAwareness(1)
@@ -195,14 +196,13 @@ class GUI:
         currentVers["font"] = ft
         currentVers["fg"] = "#FFFFFF"
         currentVers["justify"] = "center"
-        currentVers["text"] = "Version: Beta 12.19.23.1"
+        currentVers["text"] = 'Version: ' + self.version
         currentVers["background"]= '#28282B'
         currentVers.place(x=20,y=460,width=80,height=25)
 
 
         #QUIT BUTTON
         quitButton = tk.Button(root)
-        quitButton["bg"] = "#e9e9ed"
         ft = tkFont.Font(family='Times New Roman bold', size = 10)
         quitButton["font"] = ft
         quitButton["fg"] = "#000000"
@@ -213,6 +213,20 @@ class GUI:
         quitButton["text"] = "Quit"
         quitButton.place(x=100,y=460, width=134, height=30)
         quitButton["command"] = root.destroy
+
+        #DEV CONSOLE BUTTON
+        devConsole = tk.Button(root)
+        devConsole["bg"] = "#000000"
+        ft = tkFont.Font(family = 'Times New Roman bold',size = 10)
+        devConsole["font"] = ft
+        devConsole["fg"] = "#FFFFFF"
+        devConsole["border"] = 0
+        devConsole["highlightthickness"] = 0
+        devConsole["justify"] = "center"
+        devConsole["text"] = "Open Console"
+        devConsole["state"] = "disabled"
+        devConsole.place(x=255, y = 460, width = 134, height = 30)
+        devConsole["command"] = self.openConsole
 
         #CARRIER FREQUENCY INPUT
         defaultText = tk.StringVar()
@@ -260,21 +274,14 @@ class GUI:
 
     def openFile(self):
         filePath = self.fileEntry.get()
-        try:
-            time, samples, fileType = LoadAudio.loadFile(filePath)
+        time, samples, fileType, msg = LoadAudio.loadFile(filePath)
 
-            if (fileType == -1):
-                self.setSelectedFile('ERROR: Missing File Path or Unsupported File Type (Source: UNKNOWN)')
-            elif (fileType == 0):
-                fileName = os.Path(filePath).stem
-                self.setSelectedFile('Successfully Opened File: ' + fileName + '(Source: .wav Audio)')
-            elif (fileType == 1): 
-                fileName = os.Path(filePath).stem
-                self.setSelectedFile('Successfully Opened File: ' + fileName + '(Source: .npz RF)')
-        except:
-            fileName = os.path.basename(filePath).split('.')
-            self.setSelectedFile('***CRITICAL ERROR:*** Unsupported File Type: .' + fileName[len(fileName)-1])
-            return
+        if (fileType == -1):
+            self.setSelectedFile(msg)
+        elif (fileType == 0):
+            self.setSelectedFile(msg)
+        elif (fileType == 1): 
+            self.setSelectedFile(msg)
 
 
 
@@ -292,4 +299,9 @@ class GUI:
     def setSelectedFile(self,message):
         self.selectedFile.config(text = message)
 
-
+    def openConsole(self):
+        cmdWind = tk.Tk()
+        cmd = os.popen("Dev Console").read()
+        tk.Label(cmdWind, text = cmd).grid(row=0,column=0)
+        cmdWind.mainloop()
+        return

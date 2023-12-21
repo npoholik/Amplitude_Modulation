@@ -1,5 +1,6 @@
 import numpy as np
 import scipy as sp
+from scipy.io import wavfile
 import os
 
 def loadFile(filePath):
@@ -7,6 +8,7 @@ def loadFile(filePath):
     time = [];
     data = [];
     fileType = -1 # -1 for unknown, 0 for .wav, 1 for .npz
+    msg = ''
 
     #Obtain the current file path for the project
     #cwd = os.getcwd()
@@ -15,24 +17,34 @@ def loadFile(filePath):
 
     #Check if valid filename
     try:
-        sampling, data = sp.io.wavfile.read(filePath) #Read  the data and sampling rate in from a .wav file 
+        sampling, data = wavfile.read(filePath) #Read  the data and sampling rate in from a .wav file 
 
         #Calculate the time vector for the audio signal
         duration = len(data)/sampling
         time = np.arange(0,duration, 1/sampling)
 
+        fileName = os.path.basename(filePath).split('.')
+        msg = 'Successfully Opened File: ' + fileName[len(fileName)-2] + '.' + fileName[len(fileName)-1] + ' (Source: .wav Audio)'
         fileType = 0
-        return time, data, fileType
+        return time, data, fileType, msg
     
+    except wavfile.WavFileWarning:
+        msg = 'Error: '
     except OSError:
         try: 
             content = np.load(filePath)
             content['time'] = time
             content['data'] = data
+
             fileType = 1
-            return time, data, fileType
+
+            fileName = os.path.basename(filePath).split('.')
+            msg = 'Successfully Opened File: ' + fileName[len(fileName)-2] + '.' + fileName[len(fileName)-1] + ' (Source: .npz RF)'
+            
+            return time, data, fileType, msg
 
         except OSError:
-            return time, data, fileType
+            msg = 'Error: Missing File Path or Unsupported File Type (Source: UNKNOWN)'
+            return time, data, fileType, msg
 
 
