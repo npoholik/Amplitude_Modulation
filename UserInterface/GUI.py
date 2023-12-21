@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkFont
+from PIL import Image, ImageTk
 from tkinter import filedialog
 from ctypes import windll
 from Functions import LoadAudio
@@ -7,8 +8,8 @@ from Signals.Signal import Signal
 import os
 
 class GUI:
-    version = 'Beta 12.21.23.1'
-    signal = Signal(0,0,0,0,0,-1)
+    version = 'Beta 12.21.23.2'
+    signal = Signal(0,0,0,0,0,-1, '')
     filePath = ''
 
     def __init__(self, root):
@@ -95,7 +96,7 @@ class GUI:
         self.demodMod["text"] = "Mod/Demod Audio Signal"
         self.demodMod["state"] = "disabled"
         self.demodMod.place(x=400,y=360,width=134,height=30)
-        self.demodMod["command"] = self.GButton_476_command
+        #self.demodMod["command"] = self.GButton_476_command
 
         # SIGNAL OPTIONS LABEL
         self.signalOpt=tk.Label(root)
@@ -139,6 +140,7 @@ class GUI:
         animatedLabel.place(x=120,y=60,width=363,height=103)
         update(0) #Start animation
 
+
         # LABEL TO SHOWCASE SELECTED FILE AND ITS TYPE
         self.selectedFile=tk.Label(root)
         ft = tkFont.Font(family='Times',size=10)
@@ -162,7 +164,7 @@ class GUI:
         self.plotSignal["text"] = "Plot Time Signal"
         self.plotSignal["state"] = "disabled"
         self.plotSignal.place(x=60,y=310,width=134,height=30)
-        self.plotSignal["command"] = self.GButton_173_command
+        self.plotSignal["command"] = self.plotTime
 
 
         # PLOT FOURIER TRANSF. 
@@ -229,7 +231,7 @@ class GUI:
         devConsole["text"] = "Open Console"
         devConsole["state"] = "disabled"
         devConsole.place(x=255, y = 460, width = 134, height = 30)
-        devConsole["command"] = self.openConsole
+        #devConsole["command"] = self.openConsole
 
         #CARRIER FREQUENCY INPUT
         defaultText = tk.StringVar()
@@ -279,6 +281,9 @@ class GUI:
         self.filePath = self.fileEntry.get()
         time, data, sampling, fileType, msg = LoadAudio.loadFile(self.filePath)
 
+        file = os.path.basename(self.filePath).split('.')
+        fileName = file[len(file)-2] + '.' + file[len(file)-1]
+
         if (fileType == -1):
             self.setSelectedFile(msg)
             self.plotSignal["state"] = "disabled"
@@ -297,7 +302,7 @@ class GUI:
             self.rolloff["state"] = "normal"
             self.demodMod["text"] = "Modulate Audio Signal"
             self.demodMod["state"] = "normal"
-            self.signal = Signal(time,data, sampling,0,0,0)
+            self.signal = Signal(time,data, sampling,0,0,0,fileName)
         elif (fileType == 1): 
             self.setSelectedFile(msg)
             self.plotSignal["state"] = "normal"
@@ -307,27 +312,22 @@ class GUI:
             self.rolloff["state"] = "normal"
             self.demodMod["text"] = "Demodulate Audio Signal"
             self.demodMod["state"] = "normal"
-            self.signal = Signal(time,data,sampling,0,0,1)
+            self.signal = Signal(time,data,sampling,0,0,1,fileName)
 
-
-
-    def GButton_476_command(self):
-        print("command")
-
-
-    def GButton_173_command(self):
-        print("command")
-
+    def plotTime(self):
+        self.signal.plotTimeSignal
 
     def play(self):
-        self.signal.playAudio(self.filePath)
+        self.signal.playAudio()
 
     def setSelectedFile(self,message):
         self.selectedFile.config(text = message)
 
+'''
     def openConsole(self):
         cmdWind = tk.Tk()
         cmd = os.popen("Dev Console").read()
         tk.Label(cmdWind, text = cmd).grid(row=0,column=0)
         cmdWind.mainloop()
         return
+'''
