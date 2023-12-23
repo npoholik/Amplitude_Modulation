@@ -8,9 +8,10 @@ from Signals.Signal import Signal
 import os
 
 class GUI:
-    version = 'Beta 12.21.23.2'
+    version = 'Beta 12.22.23.1'
     signal = Signal(0,0,0,0,0,-1, '')
     filePath = ''
+    fileName = ''
 
     def __init__(self, root):
         #Avoid blurry font:
@@ -96,7 +97,7 @@ class GUI:
         self.demodMod["text"] = "Mod/Demod Audio Signal"
         self.demodMod["state"] = "disabled"
         self.demodMod.place(x=400,y=360,width=134,height=30)
-        #self.demodMod["command"] = self.GButton_476_command
+        self.demodMod["command"] = self.modOrDemod
 
         # SIGNAL OPTIONS LABEL
         self.signalOpt=tk.Label(root)
@@ -147,7 +148,7 @@ class GUI:
         self.selectedFile["font"] = ft
         self.selectedFile["fg"] = "#FFFFFF"
         self.selectedFile["justify"] = "left"
-        self.selectedFile["text"] = "Current Signal Selected: ____________________ (*AUDIO*)/(*RF*)"
+        self.selectedFile["text"] = "Current Signal Selected: None"
         self.selectedFile["background"]= '#28282B'
         self.selectedFile.place(x=80,y=240,width=413,height=38)
 
@@ -179,7 +180,7 @@ class GUI:
         self.ftPlot["state"] = "disabled"
         self.ftPlot["text"] = "Plot Fourier Transf."
         self.ftPlot.place(x=400,y=310,width=134,height=30)
-        #ftPlot["command"] = self.plotFT
+        self.ftPlot["command"] = self.plotFourier
 
         #PLAY AUDIO FILE
         self.playAudio=tk.Button(root)
@@ -282,7 +283,7 @@ class GUI:
         time, data, sampling, fileType, msg = LoadAudio.loadFile(self.filePath)
 
         file = os.path.basename(self.filePath).split('.')
-        fileName = file[len(file)-2] + '.' + file[len(file)-1]
+        self.fileName = file[len(file)-2] + '.' + file[len(file)-1]
 
         if (fileType == -1):
             self.setSelectedFile(msg)
@@ -302,7 +303,7 @@ class GUI:
             self.rolloff["state"] = "normal"
             self.demodMod["text"] = "Modulate Audio Signal"
             self.demodMod["state"] = "normal"
-            self.signal = Signal(time,data, sampling,0,0,0,fileName)
+            self.signal = Signal(time,data, sampling,0,0,0,self.fileName)
         elif (fileType == 1): 
             self.setSelectedFile(msg)
             self.plotSignal["state"] = "normal"
@@ -312,16 +313,37 @@ class GUI:
             self.rolloff["state"] = "normal"
             self.demodMod["text"] = "Demodulate Audio Signal"
             self.demodMod["state"] = "normal"
-            self.signal = Signal(time,data,sampling,0,0,1,fileName)
+            self.signal = Signal(time,data,sampling,0,0,1,self.fileName)
 
     def plotTime(self):
-        self.signal.plotTimeSignal
+        plotWindow = tk.Toplevel()
+        plotWindow.title(self.fileName + ' Time Signal Plot')
+        canvas = tk.Canvas(plotWindow, height = 800, width = 800)
+        canvas.pack()
+        msg = self.signal.plotTimeSignal(canvas)
+        self.setErrorOut(msg)
+
+    def plotFourier(self):
+        plotWindow = tk.Toplevel()
+        plotWindow.title(self.fileName + ' Fourier Trans. Signal Plot')
+        canvas = tk.Canvas(plotWindow, height = 800, width = 800)
+        canvas.pack()
+        msg = self.signal.plotFTSignal(canvas)
+        self.setErrorOut(msg)
 
     def play(self):
-        self.signal.playAudio()
+        msg = self.signal.playAudio()
+        self.setErrorOut(msg)
 
     def setSelectedFile(self,message):
         self.selectedFile.config(text = message)
+
+    def setErrorOut(self,msg):
+        self.errorOut.config(text=msg)
+
+    def modOrDemod(self):
+        self.setErrorOut('Currently Unsupported')
+
 
 '''
     def openConsole(self):

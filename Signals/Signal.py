@@ -2,7 +2,10 @@
 import sounddevice as sd
 import numpy as np
 import scipy as sp
+from scipy.fft import fft, fftfreq
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, 
+NavigationToolbar2Tk)  
 
 class Signal:
     __t_vect = []
@@ -12,7 +15,6 @@ class Signal:
     __fileType = -1
     __samplerate = 0
     __fileName = ''
-    #fig, ax = plt.subplots()
 
     def __init__(self,t,x, samplerate, fc, rolloff, fileType, fileName):
         self.__t_vect = t
@@ -24,8 +26,51 @@ class Signal:
         self.__fileName = fileName
     
     def playAudio(self):
-        if (self.__fileType == 0):
+        if (self.__fileType == 0 and len(self.__sample_vect) >= 1 and len(self.__t_vect) >= 1):
             sd.play(self.__sample_vect, self.__samplerate)
+            msg = 'Successfully Played ' + self.__fileName
+            return msg
+        else:
+            msg = 'Error: An Issue has Occured During Playback'
+            return msg
+        
+    def plotTimeSignal(self, canvas):
+        if ((self.__fileType == 0 or self.__fileType == 1) and len(self.__sample_vect) >= 1 and len(self.__t_vect) >= 1):
+            fig = plt.Figure(figsize = (10,10), dpi=100)
+            plot = fig.add_subplot(111)
+            plot.set_autoscaley_on(True)
+            plot.set_ylabel('Amplitude')
+            plot.set_xlabel('Time')
+            plot.plot(self.__t_vect, self.__sample_vect)
+            output = FigureCanvasTkAgg(fig, master=canvas)
+            output.get_tk_widget().pack()
+            msg = 'Successfully Plotted the Time Domain of ' + self.__fileName
+            return msg
+        else:
+            msg = 'Error: Improper Number of Samples or File Type; Could not Plot the Fourier Transform'
+            return msg
+
+    def plotFTSignal(self, canvas):
+        if ((self.__fileType == 0 or self.__fileType == 1) and len(self.__sample_vect) >= 1 and len(self.__t_vect) >= 1):
+            sample_f = fft(self.__sample_vect)
+            
+            #Find the frequency domain
+            freq = np.fft.fftfreq(len(self.__sample_vect), self.__t_vect[1] - self.__t_vect[0])
+
+            fig = plt.Figure(figsize = (10,10), dpi = 100)
+            plot = fig.add_subplot(111)
+            plot.set_autoscaley_on(True)
+            plot.set_ylabel('Power')
+            plot.set_xlabel('Frequency')
+            plot.plot(freq, np.abs(sample_f))
+            output = FigureCanvasTkAgg(fig, master=canvas)
+            output.get_tk_widget().pack()
+            msg = 'Successfully Plotted the Fourier Transform of ' + self.__fileName
+            return msg
+        else:
+            msg = 'Error: Improper Number of Samples or File Type; Could not Plot the Fourier Transform'
+            return msg
+
 
     def getTimeVector(self):
         return self.__t_vect
@@ -41,14 +86,3 @@ class Signal:
     
     def getFileType(self):
         return self.__fileType
-    
-'''
-    def plotTimeSignal(self):
-        self.fig.set_visible(not self.fig.get_visible())
-        plt.draw()
-        self.ax.set_title(self.__fileName + ' Time Domain Plot')
-        self.ax.plot(self.__t_vect,self.__sample_vect, color = 'black')
-        self.ax.set_xlabel("Time")
-        self.ax.set_ylabel("Amplitude")
-        plt.show()
-'''
