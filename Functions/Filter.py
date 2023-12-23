@@ -53,13 +53,13 @@ def filter(t,x,fc,rolloff):
     th = np.arange(tau*-0.6,tau*0.6, T)
 
     #Construct window function to create a basis for the filter
-    window = sp.signal.windows.triang(th/tau)
+    window = np.bartlett(len(th))
 
     #Two possible branches for this filter: Low Pass or BandPass
 
     #Low pass branch:
     if len(fc) == 1:
-        h = 2*fc*np.sinc(2*fc*th)*window
+        h = 2*fc*np.sinc(2*fc.dot(th)).dot(window)
         #Convolve the signal with the impulse response for y:
         y = np.convolve(t,x,th,h)
 

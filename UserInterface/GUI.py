@@ -8,7 +8,7 @@ from Signals.Signal import Signal
 import os
 
 class GUI:
-    version = 'Beta 12.22.23.1'
+    version = 'Beta 12.22.23.2'
     signal = Signal(0,0,0,0,0,-1, '')
     filePath = ''
     fileName = ''
@@ -283,7 +283,7 @@ class GUI:
         time, data, sampling, fileType, msg = LoadAudio.loadFile(self.filePath)
 
         file = os.path.basename(self.filePath).split('.')
-        self.fileName = file[len(file)-2] + '.' + file[len(file)-1]
+        self.fileName = file[len(file)-2]
 
         if (fileType == -1):
             self.setSelectedFile(msg)
@@ -342,7 +342,9 @@ class GUI:
         self.errorOut.config(text=msg)
 
     def modOrDemod(self):
-        self.setErrorOut('Currently Unsupported')
+        if (self.demodMod["text"] == "Modulate Audio Signal"):
+            msg = self.signal.modulateSignal(int(self.carFreq.get()), int(self.rolloff.get()))
+            self.setErrorOut(msg)
 
 
 '''

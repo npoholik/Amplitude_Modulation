@@ -6,6 +6,8 @@ from scipy.fft import fft, fftfreq
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, 
 NavigationToolbar2Tk)  
+from Functions import AM_Mod
+import os
 
 class Signal:
     __t_vect = []
@@ -69,6 +71,22 @@ class Signal:
             return msg
         else:
             msg = 'Error: Improper Number of Samples or File Type; Could not Plot the Fourier Transform'
+            return msg
+
+    def modulateSignal(self, fc, rolloff):
+        if (fc < 5000 or rolloff < 10):
+            msg = 'Error: Invalid Carrier Frequency or Rolloff Value Provided'
+            return msg
+        else:
+            fBW = np.array([4700])
+            z = AM_Mod.AMmod(self.__t_vect, self.__sample_vect, fc, fBW, rolloff)
+
+            cwd = os.getcwd()
+            projectPath = os.path.abspath(os.path.join(cwd, os.pardir))
+            filePath = projectPath + '\\Amplitude_Modulation\\UserGenerated\\RF_Files'
+            np.savez(filePath + '\\' + self.__fileName + ' (MODULATED)', self.__t_vect, z)
+
+            msg = 'Successfully modulated signal as \'' + self.__fileName + ' (MODULATED).npz'
             return msg
 
 

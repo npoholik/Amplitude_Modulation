@@ -22,6 +22,7 @@
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
+from Functions.Filter import filter
 
 #Function definition:
 def AMmod(t, x, fc, BW, rolloff):
@@ -38,7 +39,7 @@ def AMmod(t, x, fc, BW, rolloff):
         print('ERROR: Length of t and x vectors must be greater than 1')
         return
     #Check if all values of fc, BW, and rolloff are positive
-    if fc < 0 or BW < 0 or rolloff < 0:
+    if fc < 0 or BW[0] < 0 or rolloff < 0:
         print('ERROR: Carrier Frequency, Bandwidth, and Rolloff must all be positive values')
         return
     
