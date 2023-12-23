@@ -8,7 +8,7 @@ from Signals.Signal import Signal
 import os
 
 class GUI:
-    version = 'Beta 12.22.23.2'
+    version = 'Beta 12.22.23.3'
     signal = Signal(0,0,0,0,0,-1, '')
     filePath = ''
     fileName = ''
@@ -266,7 +266,7 @@ class GUI:
         self.errorOut["justify"] = "left"
         self.errorOut["bg"] =  '#28282B'
         self.errorOut["text"] = ''
-        self.errorOut.place(x=60, y=410, width=368, height=36)
+        self.errorOut.place(x=60, y=410, width=400, height=36)
 
     
     def openFileExplore(self):
@@ -343,8 +343,11 @@ class GUI:
 
     def modOrDemod(self):
         if (self.demodMod["text"] == "Modulate Audio Signal"):
-            msg = self.signal.modulateSignal(int(self.carFreq.get()), int(self.rolloff.get()))
-            self.setErrorOut(msg)
+            try:
+                msg = self.signal.modulateSignal(int(self.carFreq.get()), int(self.rolloff.get()))
+                self.setErrorOut(msg)
+            except ValueError:
+                self.setErrorOut('Error: Non-Integer Values for FC and RO or Signal Value Error Present')
 
 
 '''

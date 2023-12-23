@@ -1,10 +1,16 @@
 import tkinter as tk
 from UserInterface.GUI import GUI
 
-root = tk.Tk()
+def main():
+    root = tk.Tk() #Create a master root for tkinter
 
-ui = GUI(root)
+    #Initialize the GUI class:
+    GUI(root)
 
-root.mainloop()
+    root.mainloop()
+
+#Define main as the entry point to the program:
+if __name__ == '__main__':
+    main()
 
 

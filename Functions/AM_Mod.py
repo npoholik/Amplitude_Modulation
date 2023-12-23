@@ -56,6 +56,6 @@ def AMmod(t, x, fc, BW, rolloff):
     y = y * np.cos(2*np.pi*fc*t)
 
     #End of function: return the new RF (modulated) signal and the original filtered signal
-    return (y,xLPF)
+    return y, xLPF
 
 #############################################################################################
