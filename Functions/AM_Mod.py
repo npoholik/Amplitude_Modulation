@@ -46,11 +46,11 @@ def AMmod(t, x, fc, BW, rolloff):
     #Start Main Function:
     ##########################################################################################
     #Use a low pass filter on the input signal:
-    xLPF = filter(t,x,BW,rolloff) 
+    xLPF = filter(t,x,BW,rolloff)
 
     #Find the absolute minimum point and shift the signal up to remove negative values 
     A = np.abs(min(xLPF))
-    y = xLPF + A;
+    y = xLPF + A
 
     #Multiply by cos to achieve a carry frequency of fc that contains all the signal information
     y = y * np.cos(2*np.pi*fc*t)

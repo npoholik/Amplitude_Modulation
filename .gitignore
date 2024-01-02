@@ -5,5 +5,9 @@ __pycache__/
 
 
 #Do not save test audio files
-.wav
-.mp3
+*.wav
+*.mp3
+
+#Exception for Test audio/npz files:
+!/Tests/*.wav
+!*/Tests/*.npz

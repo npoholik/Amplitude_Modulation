@@ -3,12 +3,12 @@ import tkinter.font as tkFont
 from PIL import Image, ImageTk
 from tkinter import filedialog
 from ctypes import windll
-from Functions import LoadAudio
+from Functions import *
 from Signals.Signal import Signal
 import os
 
 class GUI:
-    version = 'Beta 12.22.23.3'
+    version = 'Beta 1.1.24.1'
     signal = Signal(0,0,0,0,0,-1, '')
     filePath = ''
     fileName = ''
@@ -198,7 +198,7 @@ class GUI:
 
         #SHOWCASE CURRENT VERSION NUMBER
         currentVers=tk.Message(root)
-        ft = tkFont.Font(family='Times',size=10)
+        ft = tkFont.Font(family='Times',size=9)
         currentVers["font"] = ft
         currentVers["fg"] = "#FFFFFF"
         currentVers["justify"] = "center"

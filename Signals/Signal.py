@@ -2,11 +2,11 @@
 import sounddevice as sd
 import numpy as np
 import scipy as sp
-from scipy.fft import fft, fftfreq
+from numpy import fft
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, 
 NavigationToolbar2Tk)  
-from Functions import AM_Mod
+from Functions import *
 import os
 
 class Signal:
@@ -42,7 +42,7 @@ class Signal:
             plot = fig.add_subplot(111)
             plot.set_autoscaley_on(True)
             plot.set_ylabel('Amplitude')
-            plot.set_xlabel('Time')
+            plot.set_xlabel('Time (s)')
             plot.plot(self.__t_vect, self.__sample_vect)
             output = FigureCanvasTkAgg(fig, master=canvas)
             output.get_tk_widget().pack()
@@ -54,17 +54,24 @@ class Signal:
 
     def plotFTSignal(self, canvas):
         if ((self.__fileType == 0 or self.__fileType == 1) and len(self.__sample_vect) >= 1 and len(self.__t_vect) >= 1):
-            sample_f = fft(self.__sample_vect)
+            
+            #Calculate normalized value from sampling
+            N = len(self.__sample_vect)
+            normalizing = N/2
+            #Calculate the fourier transform of the time domain samples
+            sample_f = fft.fft(self.__sample_vect)
+            norm_sample_f = np.fft.fftshift(np.abs(sample_f)/normalizing) #Find normalized signal, and utilize fftshift to avoid prioritizing positive frequencies over negative
+            #(This gets rid of an odd line drawn from the last positive point to the first negative point)
             
             #Find the frequency domain
-            freq = np.fft.fftfreq(len(self.__sample_vect), self.__t_vect[1] - self.__t_vect[0])
+            freq = np.fft.fftshift(np.fft.fftfreq(len(self.__sample_vect), self.__t_vect[1] - self.__t_vect[0])) #Use fftshift on frequencies as well
 
             fig = plt.Figure(figsize = (10,10), dpi = 100)
             plot = fig.add_subplot(111)
             plot.set_autoscaley_on(True)
             plot.set_ylabel('Power')
-            plot.set_xlabel('Frequency')
-            plot.plot(freq, np.abs(sample_f))
+            plot.set_xlabel('Frequency (Hz)')
+            plot.plot(freq, norm_sample_f) 
             output = FigureCanvasTkAgg(fig, master=canvas)
             output.get_tk_widget().pack()
             msg = 'Successfully Plotted the Fourier Transform of ' + self.__fileName
