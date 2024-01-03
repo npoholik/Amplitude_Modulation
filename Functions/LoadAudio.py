@@ -19,6 +19,9 @@ def loadFile(filePath):
     #Check if valid filename
     try:
         sampling, data = wavfile.read(filePath) #Read  the data and sampling rate in from a .wav file 
+        
+        # Eliminate stereo data (strip 2D array back to 1D)
+        data = data[:,0] #Will only save left channel (may not be ideal solution in some cases)
 
         #Calculate the time vector for the audio signal
         duration = len(data)/sampling

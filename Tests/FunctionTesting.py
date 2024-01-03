@@ -1,6 +1,8 @@
 import unittest
 import sys
 import os
+import sounddevice as sd
+import matplotlib.pyplot as plt
 
 #Define the correct file path for the unittest to import the Functions module and all associated files
 sys.path.append("./")
@@ -37,11 +39,20 @@ class testFunctions(unittest.TestCase):
             result = True
         else:
             result = False
-        self.assertTrue(result, 'Error in function file LoadAudio... Could not Successfully Open the TestAudio')
+        self.assertTrue(result, '\nError in function file LoadAudio... Could not Successfully Open the TestAudio: \n Results:' 
+                        + '\n   Length of Time Vector: ' + str(len(time)) + ' (expected > 1)'
+                        + '\n   Length of Samples Vector: ' + str(len(data)) + ' (expected > 1)'
+                        + '\n   Sample Rate: ' + str(samplerate) + ' (expected > 10000)'
+                        + '\n   File Type: ' + str(fileType) + ' (expected 0)')
 
 
     def testFilter(self):
-        print(self.filePath)
+        y = Filter.filter(self.signal.getTimeVector(), self.signal.getSampleVector(), 4700, self.signal.getRolloff())
+
+        self.assertTrue(len(y) > 1, '\nError: Filter failed to return a non-empty vector.' + '\n Results: ' 
+                        + '\n   Length of Filtered Signal: ' + str(len(y))) 
+    
+    
 
 
 if __name__ == '__main__':

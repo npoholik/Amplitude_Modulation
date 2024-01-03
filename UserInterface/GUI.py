@@ -8,7 +8,7 @@ from Signals.Signal import Signal
 import os
 
 class GUI:
-    version = 'Beta 1.1.24.1'
+    version = 'Beta 1.2.24.1'
     signal = Signal(0,0,0,0,0,-1, '')
     filePath = ''
     fileName = ''
@@ -273,7 +273,9 @@ class GUI:
         cwd = os.getcwd()
         projectPath = os.path.abspath(os.path.join(cwd, os.pardir))
         initialDir = projectPath + '\\Amplitude_Modulation\\UserGenerated\\' 
-        filePath = filedialog.askopenfilename(initialdir=initialDir, title = "Select a File",filetypes = (("Audio files","*.wav*"),("RF files","*.npz*")))
+        filePath = filedialog.askopenfilename(initialdir=initialDir, title = "Select a File",filetypes = [("Audio files","*.wav*"),
+                                                                                                          ("RF files","*.npz*"), 
+                                                                                                          ("All Files", "*.*")])
         self.fileEntry.delete(0, "end")
         self.fileEntry.insert(0,filePath)
 
@@ -347,14 +349,13 @@ class GUI:
                 msg = self.signal.modulateSignal(int(self.carFreq.get()), int(self.rolloff.get()))
                 self.setErrorOut(msg)
             except ValueError:
-                self.setErrorOut('Error: Non-Integer Values for FC and RO or Signal Value Error Present')
+                self.setErrorOut('Error: Signal Value, Cannot Proceed')
 
 
-'''
-    def openConsole(self):
-        cmdWind = tk.Tk()
-        cmd = os.popen("Dev Console").read()
-        tk.Label(cmdWind, text = cmd).grid(row=0,column=0)
-        cmdWind.mainloop()
-        return
-'''
+
+    #def openConsole(self):
+        #cmdWind = tk.Tk()
+        #cmd = os.popen("Dev Console").read()
+        #tk.Label(cmdWind, text = cmd).grid(row=0,column=0)
+        #cmdWind.mainloop()
+        #return

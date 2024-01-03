@@ -62,9 +62,18 @@ def filter(t,x,fc,rolloff):
     if isinstance(fc, collections.abc.Sequence) == False:
         #Create the impulse response necessary for the filter:
         h = np.dot(window,(2*fc*np.sinc(2*fc*th)))
-        #Convolve the signal with the impulse response for y:
-        y = np.convolve(t,x,th,h)
+        
+        #Ensure arrays are 1 dimensional:
+        #print(' x: ' + str(x.ndim))
+        #print(' h: ' + str(h.ndim))
 
+        #Convolve the signal with the impulse response for y:
+        y = np.convolve(x,h,'full')
+
+    #End of function: return the filtered signal
+    return y
+
+'''
     #Band Pass Branch
     if len(fc) == 2:
         #Find cutoff frequency by finding the average of the bandwidth
@@ -78,9 +87,10 @@ def filter(t,x,fc,rolloff):
         #Convolve the signal with the impulse response for y:
         y = np.convolve(t,x,th,h)
 
+
     #End of function: return the filtered signal
     return y
-
+'''
 #############################################################################################
     
 

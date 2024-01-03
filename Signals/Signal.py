@@ -96,6 +96,11 @@ class Signal:
             msg = 'Successfully modulated signal as \'' + self.__fileName + ' (MODULATED).npz'
             return msg
 
+    def setSampleVector(self, samples):
+        self.__sample_vect = samples
+
+    def setSampleRate(self, samplerate):
+        self.__samplerate = samplerate
 
     def getTimeVector(self):
         return self.__t_vect
