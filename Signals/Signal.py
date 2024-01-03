@@ -91,7 +91,7 @@ class Signal:
             cwd = os.getcwd()
             projectPath = os.path.abspath(os.path.join(cwd, os.pardir))
             filePath = projectPath + '\\Amplitude_Modulation\\UserGenerated\\RF_Files'
-            np.savez(filePath + '\\' + self.__fileName + ' (MODULATED)', self.__t_vect, z)
+            np.savez(filePath + '\\' + self.__fileName + ' (MODULATED)', arr_0=self.__t_vect, arr_1=z)
 
             msg = 'Successfully modulated signal as \'' + self.__fileName + ' (MODULATED).npz'
             return msg

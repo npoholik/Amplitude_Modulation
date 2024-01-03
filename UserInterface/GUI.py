@@ -8,8 +8,8 @@ from Signals.Signal import Signal
 import os
 
 class GUI:
-    version = 'Beta 1.2.24.1'
-    signal = Signal(0,0,0,0,0,-1, '')
+    version = 'Beta 1.2.24.2'
+    signal = None
     filePath = ''
     fileName = ''
 
