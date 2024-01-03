@@ -20,6 +20,10 @@ The goal of this project was ultimately to take previously created functions in 
 
 [Python 3.12.1 Documentation](https://docs.python.org/release/3.12.1/)
 
+[tkinter — Python interface to Tcl/Tk](https://docs.python.org/3/library/tkinter.html)
+
+[unittest — Unit testing framework](https://docs.python.org/3/library/unittest.html)
+
 ## Other Tools Utilized:
 
 [Visual TK](https://visualtk.com/) Web-based visual tkinter UI builder
