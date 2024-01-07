@@ -4,6 +4,21 @@ __pycache__/
 *$py.class
 
 
-#Do not save test audio files
-.wav
-.mp3
+#Do not save generated/provided audio files
+*.wav
+*.mp3
+
+#Do not save generated/provided RF files
+*.npz
+
+#Exception for Test audio/npz files:
+!/Tests/*.wav
+!*/Tests/*.npz
+
+#Ignore pyinstaller directories
+/build
+/build/Main
+
+/dist
+
+Main.spec

@@ -1,12 +1,18 @@
 import tkinter as tk
 import tkinter.font as tkFont
+from PIL import Image, ImageTk
 from tkinter import filedialog
 from ctypes import windll
-from Functions import LoadAudio
+from Functions import *
+from Signals.Signal import Signal
 import os
-from os import path
 
 class GUI:
+    version = 'Beta 1.2.24.2'
+    signal = None
+    filePath = ''
+    fileName = ''
+
     def __init__(self, root):
         #Avoid blurry font:
         windll.shcore.SetProcessDpiAwareness(1)
@@ -23,14 +29,14 @@ class GUI:
         root.configure(background='#28282B')
 
         #MAIN TITLE LABEL
-        titleLabel=tk.Label(root)
+        self.titleLabel=tk.Label(root)
         ft = tkFont.Font(family='Times New Roman bold',size=16)
-        titleLabel["font"] = ft
-        titleLabel["fg"] = "#FFFFFF"
-        titleLabel["justify"] = "center"
-        titleLabel["background"]= '#28282B'
-        titleLabel["text"] = "Welcome to the Amplitude Modulation Program"
-        titleLabel.place(x=70,y=10,width=464,height=73)
+        self.titleLabel["font"] = ft
+        self.titleLabel["fg"] = "#FFFFFF"
+        self.titleLabel["justify"] = "center"
+        self.titleLabel["background"]= '#28282B'
+        self.titleLabel["text"] = "Welcome to the Amplitude Modulation Program"
+        self.titleLabel.place(x=70,y=10,width=464,height=73)
 
         #USER ENTRY FILE PATH
         default = tk.StringVar()
@@ -44,64 +50,64 @@ class GUI:
         self.fileEntry.place(x=80,y=190,width=263,height=30)
 
         #BUTTON TO OPEN FILE EXPLORER
-        fileExplore =tk.Button(root)
-        fileExplore["bg"] = "#e9e9ed"
+        self.fileExplore =tk.Button(root)
+        self.fileExplore["bg"] = "#e9e9ed"
         ft = tkFont.Font(family='Times',size=10)
-        fileExplore["font"] = ft
-        fileExplore["fg"] = "#000000"
-        fileExplore["border"] = 0
-        fileExplore["highlightthickness"] = 0
-        fileExplore["justify"] = "center"
-        fileExplore["text"] = "Select File"
-        fileExplore.place(x=350,y=190,width=82,height=30)
-        fileExplore["command"] = self.fileExplore
+        self.fileExplore["font"] = ft
+        self.fileExplore["fg"] = "#000000"
+        self.fileExplore["border"] = 0
+        self.fileExplore["highlightthickness"] = 0
+        self.fileExplore["justify"] = "center"
+        self.fileExplore["text"] = "Select File"
+        self.fileExplore.place(x=350,y=190,width=82,height=30)
+        self.fileExplore["command"] = self.openFileExplore
 
         #BUTTON TO LOAD SELECTED FILE
-        loadFile=tk.Button(root)
-        loadFile["bg"] = "#e9e9ed"
+        self.loadFile=tk.Button(root)
+        self.loadFile["bg"] = "#e9e9ed"
         ft = tkFont.Font(family='Times',size=10)
-        loadFile["font"] = ft
-        loadFile["fg"] = "#000000"
-        loadFile["border"] = 0
-        loadFile["highlightthickness"] = 0
-        loadFile["justify"] = "center"
-        loadFile["text"] = "Open File"
-        loadFile.place(x=440,y=190,width=77,height=30)
-        loadFile["command"] = self.openFile
+        self.loadFile["font"] = ft
+        self.loadFile["fg"] = "#000000"
+        self.loadFile["border"] = 0
+        self.loadFile["highlightthickness"] = 0
+        self.loadFile["justify"] = "center"
+        self.loadFile["text"] = "Open File"
+        self.loadFile.place(x=440,y=190,width=77,height=30)
+        self.loadFile["command"] = self.openFile
 
         #FILE INFO TEXT
-        fileInfo=tk.Label(root)
+        self.fileInfo=tk.Label(root)
         ft = tkFont.Font(family='Times',size=9)
-        fileInfo["font"] = ft
-        fileInfo["fg"] = "#FFFFFF"
-        fileInfo["justify"] = "center"
-        fileInfo["text"] = "**Supported File Types: .wav (for audio) and .npz (for generated RF signals)**"
-        fileInfo["background"]= '#28282B'
-        fileInfo.place(x=80,y=160,width=390,height=30)
+        self.fileInfo["font"] = ft
+        self.fileInfo["fg"] = "#FFFFFF"
+        self.fileInfo["justify"] = "center"
+        self.fileInfo["text"] = "**Supported File Types: .wav (for audio) and .npz (for generated RF signals)**"
+        self.fileInfo["background"]= '#28282B'
+        self.fileInfo.place(x=80,y=160,width=390,height=30)
 
         #BUTTON TO MOD/DEMOD
-        demodMod=tk.Button(root)
-        demodMod["bg"] = "#e9e9ed"
+        self.demodMod=tk.Button(root)
+        self.demodMod["bg"] = "#e9e9ed"
         ft = tkFont.Font(family='Times',size=10)
-        demodMod["font"] = ft
-        demodMod["fg"] = "#000000"
-        demodMod["border"] = 0
-        demodMod["highlightthickness"] = 0
-        demodMod["justify"] = "center"
-        demodMod["text"] = "Mod/Demod Audio Signal"
-        demodMod["state"] = "disabled"
-        demodMod.place(x=400,y=360,width=134,height=30)
-        demodMod["command"] = self.GButton_476_command
+        self.demodMod["font"] = ft
+        self.demodMod["fg"] = "#000000"
+        self.demodMod["border"] = 0
+        self.demodMod["highlightthickness"] = 0
+        self.demodMod["justify"] = "center"
+        self.demodMod["text"] = "Mod/Demod Audio Signal"
+        self.demodMod["state"] = "disabled"
+        self.demodMod.place(x=400,y=360,width=134,height=30)
+        self.demodMod["command"] = self.modOrDemod
 
         # SIGNAL OPTIONS LABEL
-        signalOpt=tk.Label(root)
+        self.signalOpt=tk.Label(root)
         ft = tkFont.Font(family='Times',size=10)
-        signalOpt["font"] = ft
-        signalOpt["fg"] = "#FFFFFF"
-        signalOpt["justify"] = "center"
-        signalOpt["text"] = "Signal Options:"
-        signalOpt["background"]= '#28282B'
-        signalOpt.place(x=10,y=280,width=144,height=30)
+        self.signalOpt["font"] = ft
+        self.signalOpt["fg"] = "#FFFFFF"
+        self.signalOpt["justify"] = "center"
+        self.signalOpt["text"] = "Signal Options:"
+        self.signalOpt["background"]= '#28282B'
+        self.signalOpt.place(x=10,y=280,width=144,height=30)
 
 
         #ANIMATED GIF
@@ -135,6 +141,7 @@ class GUI:
         animatedLabel.place(x=120,y=60,width=363,height=103)
         update(0) #Start animation
 
+
         # LABEL TO SHOWCASE SELECTED FILE AND ITS TYPE
         self.selectedFile=tk.Label(root)
         ft = tkFont.Font(family='Times',size=10)
@@ -147,62 +154,61 @@ class GUI:
 
 
         #PLOT SIGNAL BUTTON
-        plotSignal=tk.Button(root)
-        plotSignal["bg"] = "#e9e9ed"
+        self.plotSignal=tk.Button(root)
+        self.plotSignal["bg"] = "#e9e9ed"
         ft = tkFont.Font(family='Times',size=10)
-        plotSignal["font"] = ft
-        plotSignal["fg"] = "#000000"
-        plotSignal["border"] = 0
-        plotSignal["highlightthickness"] = 0
-        plotSignal["justify"] = "center"
-        plotSignal["text"] = "Plot Time Signal"
-        plotSignal["state"] = "disabled"
-        plotSignal.place(x=60,y=310,width=134,height=30)
-        plotSignal["command"] = self.GButton_173_command
+        self.plotSignal["font"] = ft
+        self.plotSignal["fg"] = "#000000"
+        self.plotSignal["border"] = 0
+        self.plotSignal["highlightthickness"] = 0
+        self.plotSignal["justify"] = "center"
+        self.plotSignal["text"] = "Plot Time Signal"
+        self.plotSignal["state"] = "disabled"
+        self.plotSignal.place(x=60,y=310,width=134,height=30)
+        self.plotSignal["command"] = self.plotTime
 
 
         # PLOT FOURIER TRANSF. 
-        ftPlot = tk.Button(root)
-        ftPlot["bg"] = "#e9e9ed"
+        self.ftPlot = tk.Button(root)
+        self.ftPlot["bg"] = "#e9e9ed"
         ft = tkFont.Font(family = 'Times', size = 10)
-        ftPlot["font"]= ft
-        ftPlot["fg"] = "#000000"
-        ftPlot["border"] = 0
-        ftPlot["highlightthickness"] = 0
-        ftPlot["justify"] = "center"
-        ftPlot["state"] = "disabled"
-        ftPlot["text"] = "Plot Fourier Transf."
-        ftPlot.place(x=400,y=310,width=134,height=30)
-        #ftPlot["command"] = self.plotFT
+        self.ftPlot["font"]= ft
+        self.ftPlot["fg"] = "#000000"
+        self.ftPlot["border"] = 0
+        self.ftPlot["highlightthickness"] = 0
+        self.ftPlot["justify"] = "center"
+        self.ftPlot["state"] = "disabled"
+        self.ftPlot["text"] = "Plot Fourier Transf."
+        self.ftPlot.place(x=400,y=310,width=134,height=30)
+        self.ftPlot["command"] = self.plotFourier
 
         #PLAY AUDIO FILE
-        playAudio=tk.Button(root)
-        playAudio["bg"] = "#e9e9ed"
+        self.playAudio=tk.Button(root)
+        self.playAudio["bg"] = "#e9e9ed"
         ft = tkFont.Font(family='Times',size=10)
-        playAudio["font"] = ft
-        playAudio["fg"] = "#000000"
-        playAudio["justify"] = "center"
-        playAudio["border"] = 0
-        playAudio["highlightthickness"] = 0
-        playAudio["text"] = "Play Audio"
-        playAudio["state"] = "disabled"
-        playAudio.place(x=230,y=310,width=133,height=30)
-        playAudio["command"] = self.GButton_469_command
+        self.playAudio["font"] = ft
+        self.playAudio["fg"] = "#000000"
+        self.playAudio["justify"] = "center"
+        self.playAudio["border"] = 0
+        self.playAudio["highlightthickness"] = 0
+        self.playAudio["text"] = "Play Audio"
+        self.playAudio["state"] = "disabled"
+        self.playAudio.place(x=230,y=310,width=133,height=30)
+        self.playAudio["command"] = self.play
 
         #SHOWCASE CURRENT VERSION NUMBER
         currentVers=tk.Message(root)
-        ft = tkFont.Font(family='Times',size=10)
+        ft = tkFont.Font(family='Times',size=9)
         currentVers["font"] = ft
         currentVers["fg"] = "#FFFFFF"
         currentVers["justify"] = "center"
-        currentVers["text"] = "Version: Beta 12.19.23.1"
+        currentVers["text"] = 'Version: ' + self.version
         currentVers["background"]= '#28282B'
         currentVers.place(x=20,y=460,width=80,height=25)
 
 
         #QUIT BUTTON
         quitButton = tk.Button(root)
-        quitButton["bg"] = "#e9e9ed"
         ft = tkFont.Font(family='Times New Roman bold', size = 10)
         quitButton["font"] = ft
         quitButton["fg"] = "#000000"
@@ -214,82 +220,142 @@ class GUI:
         quitButton.place(x=100,y=460, width=134, height=30)
         quitButton["command"] = root.destroy
 
+        #DEV CONSOLE BUTTON
+        devConsole = tk.Button(root)
+        devConsole["bg"] = "#000000"
+        ft = tkFont.Font(family = 'Times New Roman bold',size = 10)
+        devConsole["font"] = ft
+        devConsole["fg"] = "#FFFFFF"
+        devConsole["border"] = 0
+        devConsole["highlightthickness"] = 0
+        devConsole["justify"] = "center"
+        devConsole["text"] = "Open Console"
+        devConsole["state"] = "disabled"
+        devConsole.place(x=255, y = 460, width = 134, height = 30)
+        #devConsole["command"] = self.openConsole
+
         #CARRIER FREQUENCY INPUT
         defaultText = tk.StringVar()
         defaultText.set('Enter Carrier Freq.')
-        carFreq = tk.Entry(root,textvariable=defaultText)
-        carFreq["borderwidth"] = "1px"
+        self.carFreq = tk.Entry(root,textvariable=defaultText)
+        self.carFreq["borderwidth"] = "1px"
         ft = tkFont.Font(family='Times', size=10)
-        carFreq["font"] = ft
-        carFreq["fg"] = "#333333"
-        carFreq["state"] = "disabled"
-        carFreq["justify"] = "center"
-        carFreq.place(x=60, y=360, width=132, height = 30)
+        self.carFreq["font"] = ft
+        self.carFreq["fg"] = "#333333"
+        self.carFreq["state"] = "disabled"
+        self.carFreq["justify"] = "center"
+        self.carFreq.place(x=60, y=360, width=132, height = 30)
 
         #ROLLOFF INPUT
         defaultText = tk.StringVar()
         defaultText.set('Enter Rolloff')
-        rolloff = tk.Entry(root,textvariable=defaultText)
-        rolloff["borderwidth"] = "1px"
+        self.rolloff = tk.Entry(root,textvariable=defaultText)
+        self.rolloff["borderwidth"] = "1px"
         ft = tkFont.Font(family='Times',size=10)
-        rolloff["font"] = ft
-        rolloff["fg"] = "#333333"
-        rolloff["state"] = "disabled"
-        rolloff["justify"] = "center"
-        rolloff.place(x=230,y=360,width=133,height=30)
+        self.rolloff["font"] = ft
+        self.rolloff["fg"] = "#333333"
+        self.rolloff["state"] = "disabled"
+        self.rolloff["justify"] = "center"
+        self.rolloff.place(x=230,y=360,width=133,height=30)
 
         #Error message output to the user:
-        errorOut = tk.Label(root)
+        self.errorOut = tk.Label(root)
         ft = tkFont.Font(family='Times New Roman bold', size = 10)
-        errorOut["font"] = ft
-        errorOut["fg"] = "#FFFFFF"
-        errorOut["justify"] = "left"
-        errorOut["bg"] =  '#28282B'
-        errorOut["text"] = ''
-        errorOut.place(x=60, y=410, width=368, height=36)
+        self.errorOut["font"] = ft
+        self.errorOut["fg"] = "#FFFFFF"
+        self.errorOut["justify"] = "left"
+        self.errorOut["bg"] =  '#28282B'
+        self.errorOut["text"] = ''
+        self.errorOut.place(x=60, y=410, width=400, height=36)
 
     
-    def fileExplore(self):
+    def openFileExplore(self):
         cwd = os.getcwd()
         projectPath = os.path.abspath(os.path.join(cwd, os.pardir))
         initialDir = projectPath + '\\Amplitude_Modulation\\UserGenerated\\' 
-        filePath = filedialog.askopenfilename(initialdir=initialDir, title = "Select a File",filetypes = (("Audio files","*.wav*"),("RF files","*.npz*")))
+        filePath = filedialog.askopenfilename(initialdir=initialDir, title = "Select a File",filetypes = [("Audio files","*.wav*"),
+                                                                                                          ("RF files","*.npz*"), 
+                                                                                                          ("All Files", "*.*")])
         self.fileEntry.delete(0, "end")
         self.fileEntry.insert(0,filePath)
 
 
     def openFile(self):
-        filePath = self.fileEntry.get()
-        try:
-            time, samples, fileType = LoadAudio.loadFile(filePath)
+        self.filePath = self.fileEntry.get()
+        time, data, sampling, fileType, msg = LoadAudio.loadFile(self.filePath)
 
-            if (fileType == -1):
-                self.setSelectedFile('ERROR: Missing File Path or Unsupported File Type (Source: UNKNOWN)')
-            elif (fileType == 0):
-                fileName = os.Path(filePath).stem
-                self.setSelectedFile('Successfully Opened File: ' + fileName + '(Source: .wav Audio)')
-            elif (fileType == 1): 
-                fileName = os.Path(filePath).stem
-                self.setSelectedFile('Successfully Opened File: ' + fileName + '(Source: .npz RF)')
-        except:
-            fileName = os.path.basename(filePath).split('.')
-            self.setSelectedFile('***CRITICAL ERROR:*** Unsupported File Type: .' + fileName[len(fileName)-1])
-            return
+        file = os.path.basename(self.filePath).split('.')
+        self.fileName = file[len(file)-2]
 
+        if (fileType == -1):
+            self.setSelectedFile(msg)
+            self.plotSignal["state"] = "disabled"
+            self.playAudio["state"] = "disabled"
+            self.ftPlot["state"] = "disabled"
+            self.carFreq["state"] = "disabled"
+            self.rolloff["state"] = "disabled"
+            self.demodMod["text"] = "Mod/Demod Signal"
+            self.demodMod["state"] = "disabled"
+        elif (fileType == 0):
+            self.setSelectedFile(msg)
+            self.plotSignal["state"] = "normal"
+            self.playAudio["state"] = "normal"
+            self.ftPlot["state"] = "normal"
+            self.carFreq["state"] = "normal"
+            self.rolloff["state"] = "normal"
+            self.demodMod["text"] = "Modulate Audio Signal"
+            self.demodMod["state"] = "normal"
+            self.signal = Signal(time,data, sampling,0,0,0,self.fileName)
+        elif (fileType == 1): 
+            self.setSelectedFile(msg)
+            self.plotSignal["state"] = "normal"
+            self.playAudio["state"] = "disabled"
+            self.ftPlot["state"] = "normal"
+            self.carFreq["state"] = "normal"
+            self.rolloff["state"] = "normal"
+            self.demodMod["text"] = "Demodulate Audio Signal"
+            self.demodMod["state"] = "normal"
+            self.signal = Signal(time,data,sampling,0,0,1,self.fileName)
 
+    def plotTime(self):
+        plotWindow = tk.Toplevel()
+        plotWindow.title(self.fileName + ' Time Signal Plot')
+        canvas = tk.Canvas(plotWindow, height = 800, width = 800)
+        canvas.pack()
+        msg = self.signal.plotTimeSignal(canvas)
+        self.setErrorOut(msg)
 
-    def GButton_476_command(self):
-        print("command")
+    def plotFourier(self):
+        plotWindow = tk.Toplevel()
+        plotWindow.title(self.fileName + ' Fourier Trans. Signal Plot')
+        canvas = tk.Canvas(plotWindow, height = 800, width = 800)
+        canvas.pack()
+        msg = self.signal.plotFTSignal(canvas)
+        self.setErrorOut(msg)
 
-
-    def GButton_173_command(self):
-        print("command")
-
-
-    def GButton_469_command(self):
-        print("command")
+    def play(self):
+        msg = self.signal.playAudio()
+        self.setErrorOut(msg)
 
     def setSelectedFile(self,message):
         self.selectedFile.config(text = message)
 
+    def setErrorOut(self,msg):
+        self.errorOut.config(text=msg)
 
+    def modOrDemod(self):
+        if (self.demodMod["text"] == "Modulate Audio Signal"):
+            try:
+                msg = self.signal.modulateSignal(int(self.carFreq.get()), int(self.rolloff.get()))
+                self.setErrorOut(msg)
+            except ValueError:
+                self.setErrorOut('Error: Signal Value, Cannot Proceed')
+
+
+
+    #def openConsole(self):
+        #cmdWind = tk.Tk()
+        #cmd = os.popen("Dev Console").read()
+        #tk.Label(cmdWind, text = cmd).grid(row=0,column=0)
+        #cmdWind.mainloop()
+        #return

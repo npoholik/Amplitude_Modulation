@@ -1,19 +1,16 @@
 import tkinter as tk
-import numpy as np
-import os
-import scipy as sp
-import matplotlib.pyplot as plt
-from Functions import LoadAudio
 from UserInterface.GUI import GUI
-from Signals.Signal import Signal
 
-root = tk.Tk()
+def main():
+    root = tk.Tk() #Create a master root for tkinter
 
-ui = GUI(root)
+    #Initialize the GUI class:
+    GUI(root)
 
-root.mainloop()
+    root.mainloop()
 
-
-
+#Define main as the entry point to the program:
+if __name__ == '__main__':
+    main()
 
 

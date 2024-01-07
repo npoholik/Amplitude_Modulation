@@ -22,6 +22,7 @@
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
+from Functions.Filter import filter
 
 #Function definition:
 def AMmod(t, x, fc, BW, rolloff):
@@ -38,23 +39,23 @@ def AMmod(t, x, fc, BW, rolloff):
         print('ERROR: Length of t and x vectors must be greater than 1')
         return
     #Check if all values of fc, BW, and rolloff are positive
-    if fc < 0 or BW < 0 or rolloff < 0:
+    if fc < 0 or BW[0] < 0 or rolloff < 0:
         print('ERROR: Carrier Frequency, Bandwidth, and Rolloff must all be positive values')
         return
     
     #Start Main Function:
     ##########################################################################################
     #Use a low pass filter on the input signal:
-    xLPF = filter(t,x,BW,rolloff) 
+    xLPF = filter(t,x,BW,rolloff)
 
     #Find the absolute minimum point and shift the signal up to remove negative values 
     A = np.abs(min(xLPF))
-    y = xLPF + A;
+    y = xLPF + A
 
     #Multiply by cos to achieve a carry frequency of fc that contains all the signal information
     y = y * np.cos(2*np.pi*fc*t)
 
     #End of function: return the new RF (modulated) signal and the original filtered signal
-    return (y,xLPF)
+    return y, xLPF
 
 #############################################################################################

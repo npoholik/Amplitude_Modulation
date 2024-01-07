@@ -23,6 +23,7 @@
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
+import collections.abc
 
 #Function definition:
 def filter(t,x,fc,rolloff):
@@ -53,16 +54,26 @@ def filter(t,x,fc,rolloff):
     th = np.arange(tau*-0.6,tau*0.6, T)
 
     #Construct window function to create a basis for the filter
-    window = sp.signal.windows.triang(th/tau)
+    window = np.bartlett(len(th/tau))
 
     #Two possible branches for this filter: Low Pass or BandPass
 
     #Low pass branch:
-    if len(fc) == 1:
-        h = 2*fc*np.sinc(2*fc*th)*window
-        #Convolve the signal with the impulse response for y:
-        y = np.convolve(t,x,th,h)
+    if isinstance(fc, collections.abc.Sequence) == False:
+        #Create the impulse response necessary for the filter:
+        h = np.dot(window,(2*fc*np.sinc(2*fc*th)))
+        
+        #Ensure arrays are 1 dimensional:
+        #print(' x: ' + str(x.ndim))
+        #print(' h: ' + str(h.ndim))
 
+        #Convolve the signal with the impulse response for y:
+        y = np.convolve(x,h,'full')
+
+    #End of function: return the filtered signal
+    return y
+
+'''
     #Band Pass Branch
     if len(fc) == 2:
         #Find cutoff frequency by finding the average of the bandwidth
@@ -76,9 +87,10 @@ def filter(t,x,fc,rolloff):
         #Convolve the signal with the impulse response for y:
         y = np.convolve(t,x,th,h)
 
+
     #End of function: return the filtered signal
     return y
-
+'''
 #############################################################################################
     
 
