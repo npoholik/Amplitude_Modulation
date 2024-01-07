@@ -141,7 +141,7 @@ class GUI:
         self.selectedFile["font"] = ft
         self.selectedFile["fg"] = "#FFFFFF"
         self.selectedFile["justify"] = "left"
-        self.selectedFile["text"] = "Current Signal Selected: ____________________ (*AUDIO*)/(*RF*)"
+        self.selectedFile["text"] = "Current Signal Selected: None"
         self.selectedFile["background"]= '#28282B'
         self.selectedFile.place(x=80,y=240,width=413,height=38)
 
