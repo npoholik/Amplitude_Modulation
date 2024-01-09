@@ -18,18 +18,13 @@ def loadFile(filePath):
     # Determine file type before attempting to open:
     pathList = os.path.basename(filePath).split('.')
     fileType = pathList[len(pathList)-1]
-    if (fileType == 'wav'):
-        fileType = 0
-    elif (fileType == 'npz'):
-        fileType = 1
-    else:
-        fileType = -1
-
 
     #Check if valid filename
-    if (fileType == 0):
+    if (fileType == 'wav'):
+        fileType = -1
         try:
             sampling, data = wavfile.read(filePath) #Read  the data and sampling rate in from a .wav file 
+            fileType = 0
 
             # Eliminate stereo data (strip 2D array back to 1D)
             data = data[:,0] #Will only save left channel (may not be ideal solution in some cases)
@@ -49,9 +44,11 @@ def loadFile(filePath):
             msg = 'Error: ...'
         except OSError:
             msg = 'Error: ...'
-    if (fileType == 1):
+    if (fileType == 'npz'):
+        fileType = -1
         try: 
             content = np.load(filePath)
+            fileType = 1
 
             #for key in content.keys(): #just for determining what names the np.save designates for time and data arrays
             #    print(key)
@@ -70,7 +67,8 @@ def loadFile(filePath):
             msg = 'Error: Missing File Path or Unsupported File Type (Source: UNKNOWN)'
             return time, data, sampling, fileType, msg
         
-    if (fileType != 0 and fileType != 1):
+    if (fileType != 'wav' and fileType != 'npz'):
+        fileType = -1
         msg = 'Error: ...'
         return time, data, sampling, fileType, msg
 
