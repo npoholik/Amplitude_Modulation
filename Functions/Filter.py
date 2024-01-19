@@ -70,12 +70,8 @@ def filter(t,x,fc,rolloff):
         #Convolve the signal with the impulse response for y:
         y = np.convolve(x,h,'full')
 
-    #End of function: return the filtered signal
-    return y
-
-'''
     #Band Pass Branch
-    if len(fc) == 2:
+    elif len(fc) == 2:
         #Find cutoff frequency by finding the average of the bandwidth
         B = fc[1] - fc[0]
         f0 = (fc[1]+fc[0])/2
@@ -90,7 +86,6 @@ def filter(t,x,fc,rolloff):
 
     #End of function: return the filtered signal
     return y
-'''
 #############################################################################################
     
 

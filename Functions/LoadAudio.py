@@ -69,7 +69,7 @@ def loadFile(filePath):
         
     if (fileType != 'wav' and fileType != 'npz'):
         fileType = -1
-        msg = 'Error: ...'
+        msg = 'Error: Unknown File Type or Incomplete File Path'
         return time, data, sampling, fileType, msg
 
 

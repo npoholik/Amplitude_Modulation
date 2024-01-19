@@ -51,6 +51,7 @@ class testFunctions(unittest.TestCase):
 
         self.assertTrue(len(y) > 1, '\nError: Filter failed to return a non-empty vector.' + '\n Results: ' 
                         + '\n   Length of Filtered Signal: ' + str(len(y))) 
+        
     
     
 

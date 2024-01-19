@@ -27,3 +27,17 @@ The goal of this project was ultimately to take previously created functions in 
 ## Other Tools Utilized:
 
 [Visual TK](https://visualtk.com/) Web-based visual tkinter UI builder
+
+----------------------------------------------------------------------------------------------------
+## Current Efforts:
+`CREATE A FUNCTIONAL UI` ✔️ (Dec 2023)
+
+`TEST AND VERIFY LOADING WAV FILES` ✔️ (Dec 2023)
+
+`TEST AND VERIFY AUDIO FILE PLOTS` ✔️ (Dec 2023)
+
+`TEST AND VERIFY FILTER` ❌
+
+`TEST AND VERIFY MODULATION` ❌
+
+`TEST AND VERIFY SAVING/LOADING NPZ FILES` ❌
