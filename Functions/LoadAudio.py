@@ -15,6 +15,8 @@ def loadFile(filePath):
     #projectPath = os.path.abspath(os.path.join(cwd, os.pardir))
     #filePath = projectPath + '\\Amplitude_Modulation\\Audio_Files\\' + filename 
 
+    # Oppenheim and Schafer Digital 
+
     # Determine file type before attempting to open:
     pathList = os.path.basename(filePath).split('.')
     fileType = pathList[len(pathList)-1]

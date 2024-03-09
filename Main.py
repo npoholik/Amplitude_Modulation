@@ -1,3 +1,10 @@
+#--------------------------------------------------
+# Created 12/14/23 by Nikolas Poholik
+#
+# Main: Entry Point into the Application
+#
+#--------------------------------------------------
+
 import tkinter as tk
 from UserInterface.GUI import GUI
 

@@ -53,7 +53,9 @@ class testFunctions(unittest.TestCase):
                         + '\n   Length of Filtered Signal: ' + str(len(y))) 
         
     
-    
+    #Move to frequency domain 
+    #Normalize volume
+    #Compare over specific frequency bandwidth (leave a little extra space)
 
 
 if __name__ == '__main__':

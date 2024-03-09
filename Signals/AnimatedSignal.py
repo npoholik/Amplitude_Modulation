@@ -35,7 +35,7 @@ def update(frame):
     return line
 
 # Looking for a 363 by 103 pixel GIF (1 inch = 100 pixels)
-# Numbers had to be tweaked to fit the GUI, not a perfect 1:1 
+# -> Numbers had to be tweaked to fit the GUI, not a perfect 1:1 
 fig.set_figwidth(1.615)
 fig.set_figheight(0.455)
 
